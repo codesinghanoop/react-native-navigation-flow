@@ -1,0 +1,5 @@
+export const SCREENA = 'screenA'
+export const SCREENB = 'screenB'
+export const SCREENC = 'screenC'
+export const SCREEND = 'screenD'
+export const CONFIG = 'config'
