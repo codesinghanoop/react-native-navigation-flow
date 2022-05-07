@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { SCREENB } from './../../navigation/route';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { login } from '../../network/services'
 
 export const fetchSessionId = createAsyncThunk(

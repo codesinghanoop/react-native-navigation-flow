@@ -18,7 +18,7 @@ const persistConfig = {
 	key: 'root',
 	version: 1,
 	storage: AsyncStorage,
-	blacklist: ['auth'],
+	blacklist: ['auth', 'selection'],
 };
 
 const rootReducer = combineReducers({
@@ -45,5 +45,7 @@ const store = configureStore({
 			},
 		})
 })
+
+export const persistor = persistStore(store);
 
 export default store

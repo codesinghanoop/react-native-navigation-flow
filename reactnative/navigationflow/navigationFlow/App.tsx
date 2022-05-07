@@ -8,25 +8,28 @@
  * @format
  */
 
-import React, { useEffect } from 'react';
+import React, { MutableRefObject, useEffect, useRef } from 'react';
 import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationState } from '@react-navigation/native';
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 import AppNavigator from './src/navigation/appNavigator';
-import store from './src/store';
+import store, { persistor } from './src/store';
 import { fetchSessionId } from './src/store/reducerSlice/auth'
 import { Provider } from 'react-redux';
 import { AsyncStorage } from 'react-native';
+import { PersistGate } from 'redux-persist/integration/react';
+import { changeRoute } from './src/store/reducerSlice/experiment';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
+  const routeNameRef: MutableRefObject<any | undefined> = useRef();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -35,16 +38,39 @@ const App = () => {
 
   useEffect(() => {
     store.dispatch(fetchSessionId())
-    AsyncStorage.setItem('firstTime', 'true');
   }, [])
+
+  const getActiveRouteName = (state: NavigationState | undefined): string => {
+    // @ts-ignore todo
+    const route = state.routes[state.index];
+  
+    if (route.state) {
+      // Dive into nested navigators
+      // @ts-ignore todo
+      return getActiveRouteName(route.state);
+    }
+  
+    return route.name;
+  };
+
+  const onStateChange = (state: any) => {
+    const previousRouteName = routeNameRef.current;
+    const currentRouteName = getActiveRouteName(state);
+    if (previousRouteName !== currentRouteName) {
+      store.dispatch(changeRoute(currentRouteName))
+    }
+    routeNameRef.current = currentRouteName;
+  };
 
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <Provider store={store} >
-        <NavigationContainer>
+        <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer onStateChange={onStateChange}>
           <AppNavigator />
         </NavigationContainer>
+        </PersistGate>
       </Provider>
     </SafeAreaView>
   );

@@ -12,7 +12,7 @@ export const fetchSelection = createAsyncThunk(
 export const selectionSlice = createSlice({
   name: 'selection',
   initialState: {
-    screenName: '',
+    screenName: 0,
     loading: false,
     error: null
   },
@@ -20,7 +20,7 @@ export const selectionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSelection.fulfilled, (state, action) => {
-      state.screenName = 'screenC';
+      state.screenName = Math.random();
       state.loading = false;
     })
     builder.addCase(fetchSelection.pending, (state, action) => {

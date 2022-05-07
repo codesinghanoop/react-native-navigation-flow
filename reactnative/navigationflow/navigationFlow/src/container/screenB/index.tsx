@@ -17,8 +17,6 @@ const ScreenB = (): ReactElement => {
     const { screenName, loading } = useSelector(state => state.selection);
     const { screenName: screenType } = useSelector(state => state.experiment);
     const [selection, setSelection] = useState('');
-
-    console.log('the type is',screenType);
     
 
     const renderData = () => {

@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { SCREENB } from '../../navigation/route';
 import { getExp } from '../../network/services'
 
 export const fetchExperiments = createAsyncThunk(
@@ -14,9 +15,13 @@ export const expSlice = createSlice({
   initialState: {
     screenName: '',
     loading: false,
-    error: null
+    error: null,
+    previousRoute: SCREENB
   },
   reducers: {
+    changeRoute: (state, action: PayloadAction<string>) => {
+      state.previousRoute = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchExperiments.fulfilled, (state, action) => {
@@ -31,3 +36,5 @@ export const expSlice = createSlice({
     })
   },
 })
+
+export const { changeRoute } = expSlice.actions
